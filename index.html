@@ -1,105 +1,100 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Veritas University - SDG Conference 2026 – Presenter Badge</title>
 
 <style>
+* {
+  box-sizing: border-box;
+}
+
 body {
   font-family: Arial, sans-serif;
   background: #f2f6fb;
-  text-align: center;
-  padding: 20px;
+  margin: 0;
+  padding: 16px;
 }
 
 h2 {
   color: #003366;
 }
 
+.container {
+  max-width: 420px;
+  margin: auto;
+}
+
 form {
   background: white;
-  padding: 20px;
-  display: inline-block;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0,0,0,.1);
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,.1);
 }
 
 input, button {
-  display: block;
-  margin: 10px auto;
-  padding: 10px;
-  width: 280px;
-  font-size: 14px;
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  font-size: 16px;
 }
 
 button {
   background: #003366;
   color: white;
   border: none;
+  border-radius: 6px;
   cursor: pointer;
-  border-radius: 5px;
 }
 
 button:hover {
-  background: #0055aa;
+  opacity: 0.9;
+}
+
+.preview {
+  margin-top: 20px;
+  text-align: center;
 }
 
 canvas {
-  margin-top: 20px;
+  width: 100%;
+  max-width: 360px;
+  border-radius: 16px;
   border: 2px solid #003366;
-  border-radius: 12px;
 }
 
-a {
-  font-weight: bold;
-  color: #003366;
+#download {
+  display: none;
+  margin-top: 14px;
   text-decoration: none;
+  color: white;
+  background: #003366;
+  padding: 12px;
+  border-radius: 6px;
+  display: inline-block;
 }
 </style>
 </head>
 
 <body>
 
-<h2>Veritas University - SDG Conference 2026 – Presenter Badge Generator</h2>
+<div class="container">
+  <h2>Veritas University - SDG Conference 2026<br>Presenter Badge Generator</h2>
 
-<form id="form">
-  <input type="text" id="name" placeholder="Enter Full Name" required>
-  <input type="file" id="photo" accept="image/*" required>
-  <button type="submit">Generate Badge</button>
-</form>
+  <form id="form">
+    <input type="text" id="name" placeholder="Full Name" required />
+    <input type="file" id="photo" accept="image/*" required />
+    <button type="submit">Generate Badge</button>
+  </form>
 
-<br>
-
-<canvas id="canvas" width="600" height="600"></canvas>
-
-<br><br>
-<a id="download" style="display:none;" download="sdg-presenter-badge.jpg">
-⬇ Download Badge
-</a>
+  <div class="preview">
+    <canvas id="canvas" width="600" height="600"></canvas><br>
+    <a id="download" download="sdg-presenter.jpeg">⬇ Download Badge</a>
+  </div>
+</div>
 
 <script>
-// -------- TEXT WRAPPING FUNCTION --------
-function wrapText(ctx, text, x, startY, maxWidth, lineHeight) {
-  const words = text.split(" ");
-  let line = "";
-  let y = startY;
-
-  for (let i = 0; i < words.length; i++) {
-    const testLine = line + words[i] + " ";
-    const metrics = ctx.measureText(testLine);
-
-    if (metrics.width > maxWidth && i > 0) {
-      ctx.fillText(line.trim(), x, y);
-      line = words[i] + " ";
-      y += lineHeight;
-    } else {
-      line = testLine;
-    }
-  }
-  ctx.fillText(line.trim(), x, y);
-}
-
-// -------- MAIN LOGIC --------
 const form = document.getElementById("form");
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
@@ -111,94 +106,85 @@ form.addEventListener("submit", function(e) {
   const name = document.getElementById("name").value.trim();
   const file = document.getElementById("photo").files[0];
 
-  if (!name || !file) return;
+  if (!file) return;
 
   const reader = new FileReader();
-
-  reader.onload = function() {
+  reader.onload = () => {
     const img = new Image();
-    img.crossOrigin = "anonymous";
-
-    img.onload = function() {
-
-      // Reset canvas
-      ctx.setTransform(1,0,0,1,0,0);
-      ctx.textAlign = "center";
-
-      // Background
-      ctx.clearRect(0,0,600,600);
-      ctx.fillStyle = "#ffffff";
-      ctx.fillRect(0,0,600,600);
-
-      // Header
-      ctx.fillStyle = "#003366";
-      ctx.fillRect(0,0,600,90);
-
-      ctx.fillStyle = "#ffffff";
-      ctx.font = "bold 20px Arial";
-      ctx.fillText("SDG CONFERENCE 2026", 300, 40);
-      ctx.font = "14px Arial";
-      ctx.fillText("Veritas University, Abuja", 300, 65);
-
-      // Presenter photo
-      ctx.drawImage(img, 225, 120, 150, 150);
-
-      // Name
-      ctx.fillStyle = "#003366";
-      ctx.font = "bold 26px Arial";
-      ctx.fillText(name, 300, 310);
-
-      // Role
-      ctx.font = "18px Arial";
-      ctx.fillText("PRESENTER", 300, 345);
-
-      // Theme (wrapped properly)
-      ctx.font = "bold 13px Arial";
-      ctx.fillText("Theme:", 300, 375);
-
-      ctx.font = "13px Arial";
-      wrapText(
-        ctx,
-        "ACHIEVING THE SUSTAINABLE DEVELOPMENT GOALS IN AFRICA: PEOPLE, ENVIRONMENT AND INSTITUTIONS",
-        300,
-        395,
-        520,
-        18
-      );
-
-      // Date & Time
-      ctx.fillText(
-        "Date: 2nd February, 2026 | Time: 10:00 AM",
-        300,
-        455
-      );
-
-      // Venue
-      ctx.fillText(
-        "Venue: Veritas University, Abuja",
-        300,
-        480
-      );
-
-      
-
-      // Footer
-      ctx.fillStyle = "#003366";
-      ctx.fillRect(0,520,600,80);
-      ctx.fillStyle = "#ffffff";
-      ctx.font = "14px Arial";
-      ctx.fillText("Official Presenter Badge", 300, 565);
-
-      // Enable download
-      download.href = canvas.toDataURL("image/jpeg", 0.95);
-      download.style.display = "inline";
-    };
-
+    img.onload = () => drawBadge(img, name);
     img.src = reader.result;
   };
-
   reader.readAsDataURL(file);
 });
+
+function drawBadge(photo, name) {
+  ctx.clearRect(0,0,600,600);
+
+  // Background
+  ctx.fillStyle = "#ffffff";
+  ctx.fillRect(0,0,600,600);
+
+  // Header
+  ctx.fillStyle = "#003366";
+  ctx.fillRect(0,0,600,90);
+
+  ctx.fillStyle = "#ffffff";
+  ctx.font = "bold 22px Arial";
+  ctx.textAlign = "center";
+  ctx.fillText("SDG CONFERENCE 2026", 300, 38);
+  ctx.font = "14px Arial";
+  ctx.fillText("Veritas University, Abuja", 300, 62);
+
+  // Photo
+  ctx.drawImage(photo, 225, 115, 150, 150);
+
+  // Name
+  ctx.fillStyle = "#003366";
+  ctx.font = "bold 26px Arial";
+  ctx.fillText(name, 300, 300);
+
+  // Role
+  ctx.font = "18px Arial";
+  ctx.fillText("PRESENTER", 300, 330);
+
+  // Details (wrapped)
+  ctx.font = "13px Arial";
+  wrapText(
+    "Theme: ACHIEVING THE SUSTAINABLE DEVELOPMENT GOALS IN AFRICA: PEOPLE, ENVIRONMENT AND INSTITUTIONS",
+    300, 370, 520, 18
+  );
+  ctx.fillText("Date: 2nd February, 2026 | Time: 10:00 AM", 300, 440);
+  ctx.fillText("Venue: Veritas University, Abuja", 300, 460);
+
+  // Footer
+  ctx.fillStyle = "#003366";
+  ctx.fillRect(0,520,600,80);
+  ctx.fillStyle = "#ffffff";
+  ctx.font = "14px Arial";
+  ctx.fillText("Official Presenter Badge", 300, 565);
+
+  // Enable download
+  download.href = canvas.toDataURL("image/jpeg", 0.95);
+  download.style.display = "inline-block";
+}
+
+function wrapText(text, x, y, maxWidth, lineHeight) {
+  const words = text.split(" ");
+  let line = "";
+
+  for (let i = 0; i < words.length; i++) {
+    const testLine = line + words[i] + " ";
+    const metrics = ctx.measureText(testLine);
+    if (metrics.width > maxWidth && i > 0) {
+      ctx.fillText(line, x, y);
+      line = words[i] + " ";
+      y += lineHeight;
+    } else {
+      line = testLine;
+    }
+  }
+  ctx.fillText(line, x, y);
+}
 </script>
 
 </body>
