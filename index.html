@@ -2,26 +2,80 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Veritas University - AI CAPACITY BUILDING WORKSHOP – Participant Badge</title>
-
+<title>Veritas University - AI Workshop Badge Generator</title>
 <style>
 body {
+  margin: 0;
   font-family: Arial, sans-serif;
   background: #f2f6fb;
+}
+
+.container {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* LEFT / INFO PANEL */
+.info {
+  flex: 1;
+  background: linear-gradient(135deg, #003366, #0a7f5a);
+  color: white;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.info h1 {
+  font-size: 28px;
+  margin-bottom: 10px;
+}
+
+.info h3 {
+  font-weight: normal;
+  margin-bottom: 20px;
+}
+
+.info p {
+  line-height: 1.6;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.info .badge {
+  margin-top: 10px;
+  padding: 8px 12px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 8px;
+  display: inline-block;
+  font-size: 13px;
+}
+
+/* RIGHT / BADGE GENERATOR */
+.generator {
+  flex: 1;
+  background: #f4f8fb; /* lighter background for contrast */
+  padding: 40px;
   text-align: center;
-  padding: 20px;
-}
-
-h2 {
   color: #003366;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
+.generator h2 {
+  color: #003366;
+  margin-bottom: 20px;
+}
+
+/* FORM */
 form {
-  background: white;
+  background: #ffffff;
   padding: 20px;
   display: inline-block;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0,0,0,.1);
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,.2);
+  color: #003366;
 }
 
 input, button {
@@ -33,7 +87,7 @@ input, button {
 }
 
 button {
-  background: #003366;
+  background: #0a7f5a;
   color: white;
   border: none;
   cursor: pointer;
@@ -41,44 +95,72 @@ button {
 }
 
 button:hover {
-  background: #0055aa;
+  background: #08694a;
 }
 
 canvas {
   margin-top: 20px;
   border: 2px solid #003366;
   border-radius: 12px;
+  max-width: 100%;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2); /* subtle shadow */
 }
 
 a {
   font-weight: bold;
-  color: #003366;
+  color: #0a7f5a;
   text-decoration: none;
+  display: inline-block;
+  margin-top: 15px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
+  .info, .generator {
+    padding: 25px;
+  }
 }
 </style>
 </head>
-
 <body>
 
-<h2>Veritas University - AI CAPACITY BUILDING WORKSHOP – Participant Badge</h2>
+<div class="container">
 
-<form id="form">
-  <input type="text" id="name" placeholder="Enter Full Name" required>
-  <input type="file" id="photo" accept="image/*" required>
-  <button type="submit">Generate Badge</button>
-</form>
+  <!-- LEFT / TOP ON MOBILE -->
+  <div class="info">
+    <h1>AI & Machine Learning Workshop</h1>
+    <h3>Veritas University, Abuja</h3>
+    <p>This 2-day capacity building workshop equips academic and administrative staff with practical skills in Artificial Intelligence and Machine Learning.</p>
+    <p>Participants will explore real-world tools, develop AI-assisted outputs, and integrate AI into teaching, research, and administration.</p>
 
-<br>
+    <div class="badge">📅 March 20–21, 2026</div>
+    <div class="badge">👥 200 Staff Trained</div>
+    <div class="badge">🎓 Certified Workshop</div>
+  </div>
 
-<canvas id="canvas" width="600" height="600"></canvas>
+  <!-- RIGHT / BOTTOM ON MOBILE -->
+  <div class="generator">
+    <h2>Generate Your Participant Badge</h2>
+    <form id="form">
+      <input type="text" id="name" placeholder="Enter Full Name" required>
+      <input type="file" id="photo" accept="image/*" required>
+      <button type="submit">Generate Badge</button>
+    </form>
 
-<br><br>
-<a id="download" style="display:none;" download="sdg-presenter-badge.jpg">
-⬇ Download Badge
-</a>
+    <canvas id="canvas" width="600" height="600"></canvas>
+
+    <a id="download" style="display:none;" download="veritas-participant-badge.jpg">
+      ⬇ Download Badge
+    </a>
+  </div>
+
+</div>
 
 <script>
-// -------- TEXT WRAPPING FUNCTION --------
+// TEXT WRAPPING FUNCTION
 function wrapText(ctx, text, x, startY, maxWidth, lineHeight) {
   const words = text.split(" ");
   let line = "";
@@ -99,7 +181,7 @@ function wrapText(ctx, text, x, startY, maxWidth, lineHeight) {
   ctx.fillText(line.trim(), x, y);
 }
 
-// -------- MAIN LOGIC --------
+// MAIN BADGE GENERATOR
 const form = document.getElementById("form");
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
@@ -114,14 +196,10 @@ form.addEventListener("submit", function(e) {
   if (!name || !file) return;
 
   const reader = new FileReader();
-
   reader.onload = function() {
     const img = new Image();
     img.crossOrigin = "anonymous";
-
     img.onload = function() {
-
-      // Reset canvas
       ctx.setTransform(1,0,0,1,0,0);
       ctx.textAlign = "center";
 
@@ -135,68 +213,61 @@ form.addEventListener("submit", function(e) {
       ctx.fillRect(0,0,600,90);
 
       ctx.fillStyle = "#ffffff";
-      ctx.font = "bold 20px Arial";
-      ctx.fillText("ARTIFICIAL INTELLIGENCE WORKSHIP 2026", 300, 40);
-      ctx.font = "14px Arial";
+      ctx.font = "bold 24px Arial"; // larger header
+      ctx.fillText("ARTIFICIAL INTELLIGENCE WORKSHOP 2026", 300, 40);
+      ctx.font = "16px Arial";
       ctx.fillText("Veritas University, Abuja", 300, 65);
 
-      // Presenter photo
-      ctx.drawImage(img, 225, 120, 150, 150);
+      // Circular participant photo
+      const photoSize = 150;
+      const centerX = 300;
+      const centerY = 195;
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, photoSize/2, 0, Math.PI*2);
+      ctx.closePath();
+      ctx.clip();
 
-      // Name
+      let imgRatio = img.width / img.height;
+      let drawWidth = photoSize;
+      let drawHeight = photoSize;
+      if(imgRatio > 1) drawHeight = photoSize / imgRatio;
+      else drawWidth = photoSize * imgRatio;
+
+      ctx.drawImage(img, centerX - drawWidth/2, centerY - drawHeight/2, drawWidth, drawHeight);
+      ctx.restore();
+
+      // Name & Role
       ctx.fillStyle = "#003366";
-      ctx.font = "bold 26px Arial";
+      ctx.font = "bold 36px Arial"; // bigger name
       ctx.fillText(name, 300, 310);
-
-      // Role
-      ctx.font = "18px Arial";
+      ctx.font = "24px Arial"; // bigger role
       ctx.fillText("PARTICIPANT", 300, 345);
 
-      // Theme (wrapped properly)
-      ctx.font = "bold 13px Arial";
+      // Theme
+      ctx.font = "bold 16px Arial";
       ctx.fillText("Theme:", 300, 375);
+      ctx.font = "16px Arial";
+      wrapText(ctx, "Integrating AI into Teaching and Research", 300, 395, 520, 20);
 
-      ctx.font = "13px Arial";
-      wrapText(
-        ctx,
-        "...Integrating AI into Teaching and Research",
-        300,
-        395,
-        520,
-        18
-      );
-
-      // Date & Time
-      ctx.fillText(
-        "Date: 20th & 21st March, 2026",
-        300,
-        455
-      );
-
-      // Venue
-      ctx.fillText(
-        "Venue: Veritas University, Abuja",
-        300,
-        480
-      );
-
-      
+      // Date & Venue
+      ctx.font = "16px Arial";
+      ctx.fillText("📅 20th & 21st March, 2026", 300, 455);
+      ctx.fillText("📍 Veritas University, Abuja", 300, 480);
 
       // Footer
       ctx.fillStyle = "#003366";
       ctx.fillRect(0,520,600,80);
       ctx.fillStyle = "#ffffff";
-      ctx.font = "14px Arial";
+      ctx.font = "16px Arial";
       ctx.fillText("Official Participant Badge", 300, 565);
 
       // Enable download
       download.href = canvas.toDataURL("image/jpeg", 0.95);
       download.style.display = "inline";
     };
-
     img.src = reader.result;
   };
-
   reader.readAsDataURL(file);
 });
 </script>
